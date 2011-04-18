@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<package>
+  <metadata>
+    <id>mios.mail.templating</id>
+    <version>1.0.0.0</version>
+    <authors>Mios</authors>
+    <description>A framework for generating templated emails.</description>
+    <language>en</language>
+  </metadata>
+	<files>
+		<file src="Templating\bin\Release\Mios.Mail.Templating.dll" target="lib"/>
+	</files>
+</package>
