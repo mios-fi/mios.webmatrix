@@ -50,7 +50,7 @@ namespace Tests {
 					.ExecuteIn(db).First().LastName);
 		}
 		[Fact]
-		public void CanPageQuery() {
+		public void CanPageOrderedQuery() {
 			Assert.Equal(1003,
 				new DynamicQuery("SELECT * FROM Users")
 					.OrderBy("[id]")
