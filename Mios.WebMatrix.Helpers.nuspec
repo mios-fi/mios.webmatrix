@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?> 
 <package>
   <metadata>
-    <id>mios.mail.templating</id>
+    <id>mios.webmatrix.helpers</id>
     <version>1.0.0.0</version>
     <authors>Mios</authors>
-    <description>A framework for generating templated emails.</description>
+    <description>Helpers for working with WebMatrix.</description>
     <language>en</language>
   </metadata>
 	<files>
-		<file src="Templating\bin\Release\Mios.Mail.Templating.dll" target="lib"/>
+		<file src="Library\bin\Release\Mios.WebMatrix.Helpers.dll" target="lib"/>
 	</files>
 </package>
