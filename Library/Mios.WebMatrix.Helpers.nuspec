@@ -8,6 +8,7 @@
     <language>en</language>
   </metadata>
 	<files>
-		<file src="Library\bin\Release\Mios.WebMatrix.Helpers.dll" target="lib"/>
+		<file src="*.dll" target="lib"/>
+		<file src="*.xml" target="lib"/>
 	</files>
 </package>
