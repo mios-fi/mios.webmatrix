@@ -11,6 +11,9 @@ namespace Mios.WebMatrix.Helpers.Data {
 		public static OrderedDynamicQuery OrderBy(this IOpenDynamicQuery query, string orderBy) {
 			return new OrderedDynamicQuery(query, orderBy, false);
 		}
+		public static OrderedDynamicQuery OrderBy(this IOpenDynamicQuery query, string orderBy, bool descending) {
+			return new OrderedDynamicQuery(query, orderBy, descending);
+		}
 		public static OrderedDynamicQuery OrderByDesc(this IOpenDynamicQuery query, string orderBy) {
 			return new OrderedDynamicQuery(query, orderBy, true);
 		}
