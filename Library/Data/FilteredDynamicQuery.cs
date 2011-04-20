@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using WebMatrix.Data;
 
-namespace Mios.WebMatrix.Helpers {
+namespace Mios.WebMatrix.Helpers.Data {
 	public struct FilteredDynamicQuery : IOpenDynamicQuery {
 		private readonly IDynamicQuery query;
 		private readonly string filter;

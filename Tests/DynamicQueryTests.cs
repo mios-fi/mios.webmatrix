@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Mios.WebMatrix.Helpers;
+using Mios.WebMatrix.Helpers.Data;
 using WebMatrix.Data;
 using Xunit;
 

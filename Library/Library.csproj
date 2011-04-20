@@ -33,6 +33,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,20 +43,16 @@
     <Reference Include="WebMatrix.Data, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatabaseExtensions.cs" />
-    <Compile Include="DynamicQuery.cs" />
-    <Compile Include="DynamicQueryExtensions.cs" />
-    <Compile Include="FilteredDynamicQuery.cs" />
-    <Compile Include="IDynamicQuery.cs" />
-    <Compile Include="OrderedDynamicQuery.cs" />
-    <Compile Include="PagedDynamicQuery.cs" />
-    <Compile Include="PagedEnumerable.cs" />
+    <Compile Include="Data\DatabaseExtensions.cs" />
+    <Compile Include="Data\DynamicQuery.cs" />
+    <Compile Include="Data\DynamicQueryExtensions.cs" />
+    <Compile Include="Data\FilteredDynamicQuery.cs" />
+    <Compile Include="Data\IDynamicQuery.cs" />
+    <Compile Include="Data\OrderedDynamicQuery.cs" />
+    <Compile Include="Data\PagedDynamicQuery.cs" />
+    <Compile Include="Data\PagedEnumerable.cs" />
+    <Compile Include="Html\Grid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Mios.WebMatrix.Helpers.nuspec">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

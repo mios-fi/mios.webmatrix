@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Mios.WebMatrix.Helpers {
+namespace Mios.WebMatrix.Helpers.Data {
 	public static class DynamicQueryExtensions {
 		public static FilteredDynamicQuery Where(this IOpenDynamicQuery query, string filter, params object[] parameters) {
 			return new FilteredDynamicQuery(query, filter, parameters);

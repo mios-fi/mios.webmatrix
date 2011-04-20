@@ -2,7 +2,7 @@
 using System.Linq;
 using WebMatrix.Data;
 
-namespace Mios.WebMatrix.Helpers {
+namespace Mios.WebMatrix.Helpers.Data {
 	public struct DynamicQuery : IOpenDynamicQuery {
 		public string Query { get; private set; }
 		public IEnumerable<object> Parameters { get; private set; }
