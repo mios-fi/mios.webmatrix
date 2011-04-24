@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>mios.webmatrix.helpers</id>
-    <version>1.0.3.0</version>
+    <version>1.0.4.0</version>
     <authors>Mios</authors>
     <description>Helpers for working with WebMatrix.</description>
     <language>en</language>
