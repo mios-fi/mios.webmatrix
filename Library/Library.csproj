@@ -8,8 +8,8 @@
     <ProjectGuid>{BC3E1965-496A-4B28-BCE3-1C60D541127A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mios.WebMatrix.Helpers</RootNamespace>
-    <AssemblyName>Mios.WebMatrix.Helpers</AssemblyName>
+    <RootNamespace>Mios.WebMatrix</RootNamespace>
+    <AssemblyName>Mios.WebMatrix</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -51,6 +51,7 @@
     <Compile Include="Data\OrderedDynamicQuery.cs" />
     <Compile Include="Data\PagedDynamicQuery.cs" />
     <Compile Include="Data\PagedEnumerable.cs" />
+    <Compile Include="DynamicHelper.cs" />
     <Compile Include="Html\Grid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

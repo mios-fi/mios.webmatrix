@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Mios.WebMatrix.Helpers.Data {
+namespace Mios.WebMatrix.Data {
 	public static class DynamicQueryExtensions {
-		public static FilteredDynamicQuery Where(this IOpenDynamicQuery query, string filter, params object[] parameters) {
+		public static IOpenDynamicQuery Where(this IOpenDynamicQuery query, string filter, params object[] parameters) {
 			return new FilteredDynamicQuery(query, filter, parameters);
 		}
 		public static OrderedDynamicQuery OrderBy(this IOpenDynamicQuery query, string orderBy) {

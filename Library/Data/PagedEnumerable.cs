@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Mios.WebMatrix.Helpers.Data {
+namespace Mios.WebMatrix.Data {
 	public struct PagedEnumerable<T> : IEnumerable<T> {
 		private readonly IEnumerable<T> enumerable;
 		public int TotalCount { get; private set; }

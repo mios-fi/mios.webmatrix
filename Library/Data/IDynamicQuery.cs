@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using WebMatrix.Data;
 
-namespace Mios.WebMatrix.Helpers.Data {
+namespace Mios.WebMatrix.Data {
 	public interface IOpenDynamicQuery : IDynamicQuery {
 	}
 

@@ -2,7 +2,7 @@
 using System.Linq;
 using WebMatrix.Data;
 
-namespace Mios.WebMatrix.Helpers.Data {
+namespace Mios.WebMatrix.Data {
 	public struct OrderedDynamicQuery : IDynamicQuery {
 		private readonly IDynamicQuery query;
 		private readonly string orderBy;

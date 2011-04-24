@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using WebMatrix.Data;
 
-namespace Mios.WebMatrix.Helpers.Data {
+namespace Mios.WebMatrix.Data {
 	public static class DatabaseExtensions {
 		public static IOpenDynamicQuery DynamicQuery(this Database database, string query) {
 			return new DynamicQuery(query);
