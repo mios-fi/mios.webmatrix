@@ -13,5 +13,9 @@ namespace Mios.WebMatrix.Data {
 		public IEnumerable<dynamic> ExecuteIn(Database db) {
 			return db.Query(Query, Parameters.ToArray());
 		}
+
+		public static IOpenDynamicQuery For(string query) {
+			return new DynamicQuery(query);
+		}
 	}
 }
