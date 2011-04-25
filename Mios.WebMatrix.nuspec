@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>mios.webmatrix.helpers</id>
+    <version>1.0.0.0</version>
+    <authors>Mios</authors>
+    <description>Helpers for working with WebMatrix.</description>
+    <language>en</language>
+  </metadata>
+  <files>
+    <file src="Library\bin\Release\*.dll" target="lib" />
+    <file src="Library\bin\Release\*.xml" target="lib" />
+  </files>
+</package>
