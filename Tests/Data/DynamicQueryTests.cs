@@ -24,11 +24,6 @@ namespace Tests {
 		}
 		[Fact]
 		public void CanExecuteMultipleFilteredQueries() {
-			db.DynamicQuery("SELECT * FROM Users")
-				.Where("[firstName]", "bob")
-				.OrderByDesc("[id]")
-				.InPagesOf(30).Page(2);
-
 			var query = new DynamicQuery("SELECT * FROM Users")
 				.Where("[lastName]=@0", "Johnsson")
 				.Where("[firstName]=@0", "Alice");
