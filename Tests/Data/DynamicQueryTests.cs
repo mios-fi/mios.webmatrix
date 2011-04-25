@@ -23,6 +23,12 @@ namespace Tests {
 			Assert.Equal(1, query.ExecuteIn(db).Count());
 		}
 		[Fact]
+		public void DoNotApplyFilterWithNullArgument() {
+			var query = new DynamicQuery("SELECT * FROM Users")
+				.Where("[firstName]=@0", null);
+			Assert.True(query.ExecuteIn(db).Count()>1);
+		}
+		[Fact]
 		public void CanExecuteMultipleFilteredQueries() {
 			var query = new DynamicQuery("SELECT * FROM Users")
 				.Where("[lastName]=@0", "Johnsson")

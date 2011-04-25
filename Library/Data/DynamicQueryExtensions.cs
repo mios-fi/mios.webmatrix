@@ -3,7 +3,7 @@
 namespace Mios.WebMatrix.Data {
 	public static class DynamicQueryExtensions {
 		public static IOpenDynamicQuery Where(this IOpenDynamicQuery query, string filter, params object[] parameters) {
-			if(parameters.Any(t => t==null)) return query;
+			if(parameters==null || parameters.Any(t => t==null)) return query;
 			return new FilteredDynamicQuery(query, filter, parameters);
 		}
 		public static OrderedDynamicQuery OrderBy(this IOpenDynamicQuery query, string orderBy) {
