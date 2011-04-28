@@ -20,12 +20,9 @@ namespace Mios.WebMatrix.Data {
 		public int Pages { get; private set; }
 		public PagedEnumerable(IEnumerable<T> enumerable, int totalCount, int pageSize, int page) : this() {
 			Pages = (int)Math.Ceiling(totalCount/(decimal)pageSize);
-			if(page<1 || page>Pages) {
-				throw new ArgumentOutOfRangeException("page");
-			}
 			TotalCount = totalCount;
 			PageSize = pageSize;
-			Page = page;
+			Page = Math.Max(1,page);
 			this.enumerable = enumerable;
 		}
 		public IEnumerator<T> GetEnumerator() {

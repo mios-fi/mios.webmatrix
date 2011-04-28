@@ -58,5 +58,13 @@ namespace Tests {
 					.InPagesOf(3).Page(2)
 					.ExecuteIn(db).First().Id);
 		}
+		[Fact]
+		public void CanPageQueryWithoutResults() {
+			Assert.Equal(0,
+				new DynamicQuery("SELECT * FROM Users WHERE [firstName]='NOTFOUND'")
+					.OrderBy("[id]")
+					.InPagesOf(3).Page(1)
+					.ExecuteIn(db).TotalCount);
+		}
 	}
 }
