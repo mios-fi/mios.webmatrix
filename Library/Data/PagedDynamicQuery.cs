@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using WebMatrix.Data;
@@ -10,10 +11,14 @@ namespace Mios.WebMatrix.Data {
 		private int selectedPage;
 
 		public PagedDynamicQuery(IDynamicQuery query, int pageSize) : this() {
+			selectedPage = 1;
 			this.query = query;
 			this.pageSize = pageSize;
 		}
 		public PagedDynamicQuery Page(int page) {
+			if(page<1) {
+				throw new ArgumentOutOfRangeException("page");
+			}
 			selectedPage = page;
 			return this;
 		}
@@ -24,10 +29,10 @@ namespace Mios.WebMatrix.Data {
 			return ExecuteIn(db);
 		}
 
-		public PagedEnumerable<dynamic> ExecuteIn(Database db) {
+		public IPagedEnumerable<dynamic> ExecuteIn(Database db) {
 			var countQuery = MakeCountQuery(Query);
 			var totalCount = db.QueryValue(countQuery, Parameters.ToArray());
-			var result = db.Query(Query, Parameters.ToArray()).Skip(selectedPage*pageSize).Take(pageSize);
+			var result = db.Query(Query, Parameters.ToArray()).Skip((selectedPage-1)*pageSize).Take(pageSize);
 			return new PagedEnumerable<dynamic>(result, totalCount, pageSize, selectedPage);
 		}
 

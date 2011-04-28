@@ -55,7 +55,7 @@ namespace Tests {
 			Assert.Equal(1003,
 				new DynamicQuery("SELECT * FROM Users")
 					.OrderBy("[id]")
-					.InPagesOf(3).Page(1)
+					.InPagesOf(3).Page(2)
 					.ExecuteIn(db).First().Id);
 		}
 	}
