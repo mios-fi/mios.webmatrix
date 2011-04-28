@@ -19,7 +19,12 @@ namespace Mios.WebMatrix.Data {
 		}
 		public string Query { get { return query.Query; } }
 		public IEnumerable<object> Parameters { get { return query.Parameters; } }
-		public IEnumerable<dynamic> ExecuteIn(Database db) {
+
+		IEnumerable<dynamic> IDynamicQuery.ExecuteIn(Database db) {
+			return ExecuteIn(db);
+		}
+
+		public new PagedEnumerable<dynamic> ExecuteIn(Database db) {
 			var countQuery = MakeCountQuery(Query);
 			var totalCount = db.QueryValue(countQuery, Parameters.ToArray());
 			var result = db.Query(Query, Parameters.ToArray()).Skip(selectedPage*pageSize).Take(pageSize);

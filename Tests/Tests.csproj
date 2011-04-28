@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="Data\DynamicQueryTests.cs" />
     <Compile Include="DynamicHelperTests.cs" />
-    <Compile Include="Html\GridTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
