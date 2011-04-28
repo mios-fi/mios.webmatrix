@@ -1,11 +1,21 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Mios.WebMatrix.Data {
-	public struct PagedEnumerable<T> : IEnumerable<T> {
+	public interface IPagedEnumerable : IEnumerable {
+		int TotalCount { get; }
+		int PageSize { get; }
+		int Page { get; }
+		int Pages { get; }
+	}
+	public interface IPagedEnumerable<out T> : IPagedEnumerable, IEnumerable<T> {
+		new IEnumerator<T> GetEnumerator();
+	}
+	public struct PagedEnumerable<T> : IPagedEnumerable<T> {
 		private readonly IEnumerable<T> enumerable;
 		public int TotalCount { get; private set; }
-		public int PageSize { get; set; }
+		public int PageSize { get; private set; }
 		public int Page { get; private set; }
 		public int Pages { get; private set; }
 		public PagedEnumerable(IEnumerable<T> enumerable, int totalCount, int pageSize, int page) : this() {
@@ -18,7 +28,7 @@ namespace Mios.WebMatrix.Data {
 		public IEnumerator<T> GetEnumerator() {
 			return enumerable.GetEnumerator();
 		}
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator() {
 			return GetEnumerator();
 		}
 	}

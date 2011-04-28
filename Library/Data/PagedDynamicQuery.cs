@@ -24,7 +24,7 @@ namespace Mios.WebMatrix.Data {
 			return ExecuteIn(db);
 		}
 
-		public new PagedEnumerable<dynamic> ExecuteIn(Database db) {
+		public PagedEnumerable<dynamic> ExecuteIn(Database db) {
 			var countQuery = MakeCountQuery(Query);
 			var totalCount = db.QueryValue(countQuery, Parameters.ToArray());
 			var result = db.Query(Query, Parameters.ToArray()).Skip(selectedPage*pageSize).Take(pageSize);
