@@ -40,7 +40,7 @@ namespace Tests {
 		public void CanOrderQuery() {
 			Assert.Equal("Bobson",
 				new DynamicQuery("SELECT * FROM Users")
-					.OrderBy("[lastName]")
+					.OrderBy("lastName")
 					.ExecuteIn(db).First().LastName);
 		}
 		[Fact]
@@ -48,12 +48,12 @@ namespace Tests {
 			Assert.Equal("Bobson",
 				new DynamicQuery("SELECT * FROM Users")
 					.Where("[firstName]=@0","Bob")
-					.OrderBy("[lastName]")
+					.OrderBy("lastName")
 					.ExecuteIn(db).First().LastName);
 		}
 		[Fact]
 		public void OrderingForEmptyColumnIsIgnored() {
-			Assert.Equal("Alice",
+			Assert.Equal("Bob",
 				new DynamicQuery("SELECT * FROM Users")
 					.OrderBy("")
 					.ExecuteIn(db).First().FirstName);
@@ -69,7 +69,7 @@ namespace Tests {
 		public void CanPageOrderedQuery() {
 			Assert.Equal(1003,
 				new DynamicQuery("SELECT * FROM Users")
-					.OrderBy("[id]")
+					.OrderBy("id")
 					.InPagesOf(3).Page(2)
 					.ExecuteIn(db).First().Id);
 		}
@@ -77,7 +77,7 @@ namespace Tests {
 		public void CanPageQueryWithoutResults() {
 			Assert.Equal(0,
 				new DynamicQuery("SELECT * FROM Users WHERE [firstName]='NOTFOUND'")
-					.OrderBy("[id]")
+					.OrderBy("id")
 					.InPagesOf(3).Page(1)
 					.ExecuteIn(db).TotalCount);
 		}
