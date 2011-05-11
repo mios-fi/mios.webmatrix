@@ -7,13 +7,13 @@ namespace Mios.WebMatrix.Data {
 			return new FilteredDynamicQuery(query, filter, parameters);
 		}
 		public static OrderedDynamicQuery OrderBy(this IOpenDynamicQuery query, string orderBy) {
-			return new OrderedDynamicQuery(query, orderBy, false);
+			return OrderBy(query, orderBy, false);
+		}
+		public static OrderedDynamicQuery OrderByDesc(this IOpenDynamicQuery query, string orderBy) {
+			return OrderBy(query, orderBy, true);
 		}
 		public static OrderedDynamicQuery OrderBy(this IOpenDynamicQuery query, string orderBy, bool descending) {
 			return new OrderedDynamicQuery(query, orderBy, descending);
-		}
-		public static OrderedDynamicQuery OrderByDesc(this IOpenDynamicQuery query, string orderBy) {
-			return new OrderedDynamicQuery(query, orderBy, true);
 		}
 		public static PagedDynamicQuery InPagesOf(this OrderedDynamicQuery query, int pageSize) {
 			return new PagedDynamicQuery(query, pageSize);

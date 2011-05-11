@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Mios.WebMatrix.Data;
 using WebMatrix.Data;
 using Xunit;
@@ -50,6 +51,20 @@ namespace Tests {
 					.OrderBy("[lastName]")
 					.ExecuteIn(db).First().LastName);
 		}
+		[Fact]
+		public void OrderingForEmptyColumnIsIgnored() {
+			Assert.Equal("Alice",
+				new DynamicQuery("SELECT * FROM Users")
+					.OrderBy("")
+					.ExecuteIn(db).First().FirstName);
+		}
+
+		[Fact]
+		public void ThrowsForDangerousColumnNames() {
+			var query = new DynamicQuery("SELECT * FROM Users");
+			Assert.Throws<ArgumentOutOfRangeException>(() => query.OrderBy("danger]; DROP TABLE Users"));
+		}
+
 		[Fact]
 		public void CanPageOrderedQuery() {
 			Assert.Equal(1003,
