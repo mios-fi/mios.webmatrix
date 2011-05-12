@@ -17,13 +17,13 @@ namespace Mios.WebMatrix.Data {
 
 		public string Method { get; set; }
 
-		public SimilarityOrderedDynamicQuery(IDynamicQuery wrapped, string field, string term) : this() {
+		public SimilarityOrderedDynamicQuery(IDynamicQuery wrapped)
+			: this() {
 			Method = "dbo.JaroWinkler";
 			fields = new Dictionary<string, string>();
 			this.wrapped = wrapped;
-			And(field, term);
 		}
-		public SimilarityOrderedDynamicQuery And(string column, string term) {
+		public SimilarityOrderedDynamicQuery To(string column, string term) {
 			if(column == null) throw new ArgumentNullException("column");
 			if(!ColumnNamePattern.IsMatch(column)) {
 				throw new ArgumentOutOfRangeException("column","Invalid column name '" + column + "'");

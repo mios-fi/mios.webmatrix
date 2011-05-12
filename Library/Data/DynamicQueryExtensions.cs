@@ -15,8 +15,8 @@ namespace Mios.WebMatrix.Data {
 		public static OrderedDynamicQuery OrderBy(this IOpenDynamicQuery query, string orderBy, bool descending) {
 			return new OrderedDynamicQuery(query, orderBy, descending);
 		}
-		public static SimilarityOrderedDynamicQuery OrderBySimilarity(this IOpenDynamicQuery query, string field, string term, string method = null) {
-			var similarityQuery = new SimilarityOrderedDynamicQuery(query, field, term);
+		public static SimilarityOrderedDynamicQuery OrderBySimilarity(this IOpenDynamicQuery query, string method = null) {
+			var similarityQuery = new SimilarityOrderedDynamicQuery(query);
 			similarityQuery.Method = method ?? similarityQuery.Method;
 			return similarityQuery;
 		}

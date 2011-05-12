@@ -75,15 +75,26 @@ namespace Tests {
 		[Fact]
 		public void OrderBySimilarity() {
 			var query = new DynamicQuery("SELECT * FROM Users")
-				.OrderBySimilarity("firstName", "Alice", method: "dbo.JaroWinkler");
+				.OrderBySimilarity().To("firstName", "Alice");
 			Assert.Equal("SELECT * FROM Users ORDER BY (dbo.JaroWinkler([firstName],@0)) DESC", query.Query);
 			Assert.Equal("Alice", query.Parameters.ToArray()[0]);
 		}
 		[Fact]
+		public void OrderBySimilarityWithEmptyTerm() {
+			IDynamicQuery query;
+			query = new DynamicQuery("SELECT * FROM Users")
+				.OrderBySimilarity().To("firstName", String.Empty);
+			Assert.Equal("SELECT * FROM Users", query.Query);
+			query = new DynamicQuery("SELECT * FROM Users")
+				.OrderBySimilarity().To("firstName", null);
+			Assert.Equal("SELECT * FROM Users", query.Query);
+		}
+		[Fact]
 		public void OrderByMultipleSimilarity() {
 			var query = new DynamicQuery("SELECT * FROM Users")
-				.OrderBySimilarity("firstName", "Alice", method: "dbo.JaroWinkler")
-					.And("lastName","Stone");
+				.OrderBySimilarity()
+					.To("firstName", "Alice")
+					.To("lastName","Stone");
 			Assert.Equal("SELECT * FROM Users ORDER BY (dbo.JaroWinkler([firstName],@0)+dbo.JaroWinkler([lastName],@1)) DESC", query.Query);
 			Assert.Equal("Alice", query.Parameters.ToArray()[0]);
 			Assert.Equal("Stone", query.Parameters.ToArray()[1]);
