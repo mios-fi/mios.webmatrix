@@ -28,7 +28,7 @@ namespace Mios.WebMatrix.Data {
 		public string Query { 
 			get {
 				if(String.IsNullOrEmpty(orderBy)) return wrapped.Query;
-				return wrapped.Query + " ORDER BY " + orderBy + (descending ? " DESC" : " ASC"); 
+				return wrapped.Query + String.Format(" ORDER BY [{0}] {1}",orderBy,descending?"DESC":"ASC"); 
 			} 
 		}
 		public IEnumerable<object> Parameters { get { return wrapped.Parameters; } }

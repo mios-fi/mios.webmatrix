@@ -13,56 +13,80 @@ namespace Tests {
 		}
 
 		[Fact]
-		public void CanExecuteQuery() {
+		public void Identity() {
 			var query = new DynamicQuery("SELECT * FROM Users");
-			Assert.True(query.ExecuteIn(db).Any(t => t.firstName=="Alice"));
+			Assert.Equal("SELECT * FROM Users", query.Query);
+			Assert.Equal(0, query.Parameters.Count());
 		}
 		[Fact]
-		public void CanExecuteFilteredQuery() {
+		public void SingleFilter() {
 			var query = new DynamicQuery("SELECT * FROM Users")
 				.Where("[firstName]=@0", "Alice");
-			Assert.Equal(1, query.ExecuteIn(db).Count());
+			Assert.Equal("SELECT * FROM Users WHERE [firstName]=@0", query.Query);
+			Assert.Equal("Alice", query.Parameters.ToArray()[0]);
 		}
 		[Fact]
-		public void DoNotApplyFilterWithNullArgument() {
+		public void SingleFilterWithoutValue() {
 			var query = new DynamicQuery("SELECT * FROM Users")
 				.Where("[firstName]=@0", null);
-			Assert.True(query.ExecuteIn(db).Count()>1);
+			Assert.Equal("SELECT * FROM Users", query.Query);
+			Assert.Equal(0, query.Parameters.Count());
 		}
 		[Fact]
-		public void CanExecuteMultipleFilteredQueries() {
+		public void MultipleFilters() {
 			var query = new DynamicQuery("SELECT * FROM Users")
 				.Where("[lastName]=@0", "Johnsson")
 				.Where("[firstName]=@0", "Alice");
-			Assert.Equal(0, query.ExecuteIn(db).Count());
+			Assert.Equal("SELECT * FROM Users WHERE [lastName]=@0 AND [firstName]=@1", query.Query);
+			Assert.Equal("Johnsson", query.Parameters.ToArray()[0]);
+			Assert.Equal("Alice", query.Parameters.ToArray()[1]);
 		}
 		[Fact]
-		public void CanOrderQuery() {
-			Assert.Equal("Bobson",
-				new DynamicQuery("SELECT * FROM Users")
-					.OrderBy("lastName")
-					.ExecuteIn(db).First().LastName);
+		public void OrderBy() {
+			var query =	new DynamicQuery("SELECT * FROM Users")
+				.OrderBy("lastName");
+			Assert.Equal("SELECT * FROM Users ORDER BY [lastName] ASC", query.Query);
 		}
 		[Fact]
-		public void CanOrderFilteredQuery() {
-			Assert.Equal("Bobson",
-				new DynamicQuery("SELECT * FROM Users")
-					.Where("[firstName]=@0","Bob")
-					.OrderBy("lastName")
-					.ExecuteIn(db).First().LastName);
+		public void OrderByDescending() {
+			var query =	new DynamicQuery("SELECT * FROM Users")		
+				.OrderBy("lastName", descending: true);
+			Assert.Equal("SELECT * FROM Users ORDER BY [lastName] DESC", query.Query);
 		}
 		[Fact]
-		public void OrderingForEmptyColumnIsIgnored() {
-			Assert.Equal("Bob",
-				new DynamicQuery("SELECT * FROM Users")
-					.OrderBy("")
-					.ExecuteIn(db).First().FirstName);
+		public void FilterWithOrderBy() {
+			var query = new DynamicQuery("SELECT * FROM Users")
+				.Where("[firstName]=@0","Bob")
+				.OrderBy("lastName");
+			Assert.Equal("SELECT * FROM Users WHERE [firstName]=@0 ORDER BY [lastName] ASC", query.Query);
+			Assert.Equal("Bob", query.Parameters.ToArray()[0]);
 		}
-
 		[Fact]
-		public void ThrowsForDangerousColumnNames() {
+		public void OrderByEmptyColumn() {
+			var query = new DynamicQuery("SELECT * FROM Users")
+				.OrderBy("");
+			Assert.Equal("SELECT * FROM Users", query.Query);
+		}
+		[Fact]
+		public void OrderByDangerousColumnName() {
 			var query = new DynamicQuery("SELECT * FROM Users");
 			Assert.Throws<ArgumentOutOfRangeException>(() => query.OrderBy("danger]; DROP TABLE Users"));
+		}
+		[Fact]
+		public void OrderBySimilarity() {
+			var query = new DynamicQuery("SELECT * FROM Users")
+				.OrderBySimilarity("firstName", "Alice", method: "dbo.JaroWinkler");
+			Assert.Equal("SELECT * FROM Users ORDER BY (dbo.JaroWinkler([firstName],@0)) DESC", query.Query);
+			Assert.Equal("Alice", query.Parameters.ToArray()[0]);
+		}
+		[Fact]
+		public void OrderByMultipleSimilarity() {
+			var query = new DynamicQuery("SELECT * FROM Users")
+				.OrderBySimilarity("firstName", "Alice", method: "dbo.JaroWinkler")
+					.And("lastName","Stone");
+			Assert.Equal("SELECT * FROM Users ORDER BY (dbo.JaroWinkler([firstName],@0)+dbo.JaroWinkler([lastName],@1)) DESC", query.Query);
+			Assert.Equal("Alice", query.Parameters.ToArray()[0]);
+			Assert.Equal("Stone", query.Parameters.ToArray()[1]);
 		}
 
 		[Fact]

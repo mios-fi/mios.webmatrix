@@ -50,6 +50,7 @@
     <Compile Include="Data\OrderedDynamicQuery.cs" />
     <Compile Include="Data\PagedDynamicQuery.cs" />
     <Compile Include="Data\PagedEnumerable.cs" />
+    <Compile Include="Data\SimilarityOrderedDynamicQuery.cs" />
     <Compile Include="DynamicHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
