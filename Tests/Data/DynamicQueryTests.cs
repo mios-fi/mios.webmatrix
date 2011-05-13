@@ -116,6 +116,15 @@ namespace Tests.Data {
 			Assert.Equal("Alice", query.Parameters.ToArray()[0]);
 			Assert.Equal("Stone", query.Parameters.ToArray()[1]);
 		}
+		[Fact]
+		public void OrderByMixedSimpleAndSimilarity() {
+			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
+				.OrderBySimilarity("[firstName]", "Alice")
+				.OrderBy("lastName",false);
+			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			Assert.Equal("SELECT * FROM Users ORDER BY (dbo.JaroWinkler([firstName],@0)) DESC, [lastName] ASC", query.Statement);
+			Assert.Equal("Alice", query.Parameters.ToArray()[0]);
+		}
 
 		[Fact]
 		public void CanPageOrderedQuery() {

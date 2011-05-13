@@ -141,7 +141,7 @@ namespace Mios.WebMatrix.Data {
 			}
 
 			if(hasSimpleClauses) {
-				if(hasSimilarityClauses) sb.Append(" AND ");
+				if(hasSimilarityClauses) sb.Append(", ");
 				var simpleSeparator = "";
 				foreach(var clause in simpleClauses) {
 					sb.Append(simpleSeparator);
