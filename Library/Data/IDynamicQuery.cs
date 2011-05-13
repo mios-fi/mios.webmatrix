@@ -2,12 +2,15 @@
 using WebMatrix.Data;
 
 namespace Mios.WebMatrix.Data {
-	public interface IOpenDynamicQuery : IDynamicQuery {
+	public interface IPagedDynamicQuery : IDynamicQuery {
+		IPagedDynamicQuery Page(int page);
+		new IPagedEnumerable<dynamic> ExecuteIn(Database db);
 	}
-
 	public interface IDynamicQuery {
-		string Query { get; }
-		IEnumerable<object> Parameters { get; }
 		IEnumerable<dynamic> ExecuteIn(Database db);
+		IDynamicQuery Where(string filter, params object[] parameters);
+		IDynamicQuery OrderBy(string column, bool descending);
+		IDynamicQuery OrderBySimilarity(string column, string parameter);
+		IPagedDynamicQuery InPagesOf(int pageSize);
 	}
 }
