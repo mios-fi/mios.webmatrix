@@ -52,10 +52,12 @@ namespace Mios.WebMatrix.Data {
 			return this;
 		}
 
-		public IDynamicQuery OrderBySimilarity(string expression, string parameter) {
+		public IDynamicQuery OrderBySimilarity(string expression, string parameter, bool ignoreCase, string method) {
 			similarityOrderClauses.Add(new SimilarityOrderingClause {
 				Expression = expression,
-				Parameter = parameter
+				Parameter = parameter,
+				IgnoreCase = ignoreCase,
+				Method = method
 			});
 			return this;
 		}
@@ -133,8 +135,13 @@ namespace Mios.WebMatrix.Data {
 				var similaritySeparator = "";
 				foreach(var clause in similarityClauses) {
 					sb.Append(similaritySeparator);
-					sb.AppendFormat("dbo.JaroWinkler({0},@{1})", clause.Expression, parameters.Count);
-					parameters.Add(clause.Parameter);
+					if(clause.IgnoreCase) {
+						sb.AppendFormat("{0}(LOWER({1}),@{2})", clause.Method, clause.Expression, parameters.Count);
+						parameters.Add(clause.Parameter.ToLower());
+					} else {
+						sb.AppendFormat("{0}({1},@{2})", clause.Method, clause.Expression, parameters.Count);
+						parameters.Add(clause.Parameter);
+					}
 					similaritySeparator = "+";
 				}
 				sb.Append(") DESC");
@@ -176,6 +183,8 @@ namespace Mios.WebMatrix.Data {
 		struct SimilarityOrderingClause {
 			public string Expression;
 			public string Parameter;
+			public bool IgnoreCase;
+			public string Method;
 		}
 
 		struct WhereClause {
