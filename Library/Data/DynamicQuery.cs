@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using WebMatrix.Data;
@@ -65,13 +66,22 @@ namespace Mios.WebMatrix.Data {
 
 		IPagedEnumerable<dynamic> IPagedDynamicQuery.ExecuteIn(Database db) {
 			var countQuery = BuildCountQuery();
-			var count = db.QueryValue(countQuery.Statement, countQuery.Parameters);
-			var items = ExecuteIn(db).Skip(Math.Max(0,page-1)*pageSize).Take(pageSize);
+			int count;
+			try {
+				count = db.QueryValue(countQuery.Statement, countQuery.Parameters);
+			} catch(Exception e) {
+				throw new DynamicQueryException("Exception when executing COUNT() query '" + countQuery.Statement + "'", e);
+			}
+			var items = ExecuteIn(db).Skip(Math.Max(0, page - 1)*pageSize).Take(pageSize);
 			return new PagedEnumerable<dynamic>(items, count, pageSize, page);
 		}
 		public IEnumerable<dynamic> ExecuteIn(Database db) {
 			var query = BuildItemQuery();
-			return db.Query(query.Statement, query.Parameters);
+			try {
+				return db.Query(query.Statement, query.Parameters);
+			} catch(Exception e) {
+				throw new DynamicQueryException("Exception when executing query '" + query.Statement + "'", e);
+			}
 		}
 
 		public static IDynamicQuery For(string baseQuery) {
@@ -163,7 +173,7 @@ namespace Mios.WebMatrix.Data {
 			return !String.IsNullOrEmpty(parameter as string);
 		}
 
-		private static readonly Regex FieldSelectionPattern = new Regex(@"^SELECT.*FROM");
+		static private readonly Regex FieldSelectionPattern = new Regex(@"^SELECT.*FROM", RegexOptions.Singleline|RegexOptions.IgnoreCase|RegexOptions.Compiled);
 		static private readonly Regex ParameterPattern = new Regex(@"@\d+");
 		static private readonly Regex SafeColumnPattern = 
 			new Regex(@"^([a-z][a-z0-9_]*|\[[a-z][a-z0-9_]*\])$", RegexOptions.Compiled|RegexOptions.IgnoreCase);
@@ -190,6 +200,30 @@ namespace Mios.WebMatrix.Data {
 		struct WhereClause {
 			public string Expression;
 			public object[] Parameters;
+		}
+	}
+
+	[Serializable]
+	public class DynamicQueryException : Exception {
+		//
+		// For guidelines regarding the creation of new exception types, see
+		//    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
+		// and
+		//    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
+		//
+
+		public DynamicQueryException() {
+		}
+
+		public DynamicQueryException(string message) : base(message) {
+		}
+
+		public DynamicQueryException(string message, Exception inner) : base(message, inner) {
+		}
+
+		protected DynamicQueryException(
+			SerializationInfo info,
+			StreamingContext context) : base(info, context) {
 		}
 	}
 }
