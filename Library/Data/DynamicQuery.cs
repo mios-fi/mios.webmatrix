@@ -173,10 +173,12 @@ namespace Mios.WebMatrix.Data {
 			return !String.IsNullOrEmpty(parameter as string);
 		}
 
-		static private readonly Regex FieldSelectionPattern = new Regex(@"^SELECT.*FROM", RegexOptions.Singleline|RegexOptions.IgnoreCase|RegexOptions.Compiled);
-		static private readonly Regex ParameterPattern = new Regex(@"@\d+");
-		static private readonly Regex SafeColumnPattern = 
-			new Regex(@"^([a-z][a-z0-9_]*|\[[a-z][a-z0-9_]*\])$", RegexOptions.Compiled|RegexOptions.IgnoreCase);
+		static private readonly Regex FieldSelectionPattern 
+			= new Regex(@"^\s*SELECT.*FROM", RegexOptions.Singleline|RegexOptions.IgnoreCase|RegexOptions.Compiled);
+		static private readonly Regex ParameterPattern 
+			= new Regex(@"@\d+");
+		static private readonly Regex SafeColumnPattern 
+			= new Regex(@"^([a-z][a-z0-9_]*|\[[a-z][a-z0-9_]*\])$", RegexOptions.Compiled|RegexOptions.IgnoreCase);
 
 		static string ReindexParameters(string expression, int startIndex) {
 			return ParameterPattern.Replace(expression, match => {

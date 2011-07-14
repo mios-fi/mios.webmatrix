@@ -138,9 +138,11 @@ namespace Tests.Data {
 		public void CanCountMultilineQuery() {
 			Assert.Equal(4,
 				DynamicQuery.For(
-					@"SELECT 
+					@"
+					SELECT 
 					99 AS [id] 
-					FROM Users")
+					FROM 
+					Users")
 					.OrderBy("id", false)
 					.InPagesOf(3).Page(2)
 					.ExecuteIn(db).TotalCount);
