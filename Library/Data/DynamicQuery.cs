@@ -174,7 +174,7 @@ namespace Mios.WebMatrix.Data {
 		}
 
 		static private readonly Regex FieldSelectionPattern 
-			= new Regex(@"^\s*SELECT.*FROM", RegexOptions.Singleline|RegexOptions.IgnoreCase|RegexOptions.Compiled);
+			= new Regex(@"^\s*SELECT.*?FROM", RegexOptions.Singleline|RegexOptions.IgnoreCase|RegexOptions.Compiled);
 		static private readonly Regex ParameterPattern 
 			= new Regex(@"@\d+");
 		static private readonly Regex SafeColumnPattern 

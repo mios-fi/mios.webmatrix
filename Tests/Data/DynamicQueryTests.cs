@@ -134,6 +134,8 @@ namespace Tests.Data {
 					.InPagesOf(3).Page(2)
 					.ExecuteIn(db).First().Id);
 		}
+
+
 		[Fact]
 		public void CanCountMultilineQuery() {
 			Assert.Equal(4,
@@ -147,6 +149,17 @@ namespace Tests.Data {
 					.InPagesOf(3).Page(2)
 					.ExecuteIn(db).TotalCount);
 		}
+
+		[Fact]
+		public void CanCountNestedQuery() {
+			Assert.Equal(4,
+				DynamicQuery.For(
+					@"SELECT 99 AS [id] FROM ( SELECT * FROM Users ) AS Users")
+					.OrderBy("id", false)
+					.InPagesOf(3).Page(2)
+					.ExecuteIn(db).TotalCount);
+		}
+
 		[Fact]
 		public void CanPageQueryWithoutResults() {
 			Assert.Equal(0,
