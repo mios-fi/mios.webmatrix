@@ -126,6 +126,18 @@ namespace Tests.Data {
 			Assert.Equal("alice", query.Parameters.ToArray()[0]);
 		}
 
+
+		[Fact]
+		public void ParameterizedQueryWithWheres() {
+			var dynamicQuery = DynamicQuery.For("SELECT @0 AS [x] FROM Users",1234)
+				.Where("[id]=@0",1003);
+			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			Assert.Equal("SELECT @0 AS [x] FROM Users WHERE [id]=@1", query.Statement);
+			Assert.Equal(2, query.Parameters.Count());
+			Assert.Equal(1234, query.Parameters[0]);
+			Assert.Equal(1003, query.Parameters[1]);
+		}
+
 		[Fact]
 		public void CanPageOrderedQuery() {
 			Assert.Equal(1003,

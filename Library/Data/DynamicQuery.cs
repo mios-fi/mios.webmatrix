@@ -9,14 +9,16 @@ using WebMatrix.Data;
 namespace Mios.WebMatrix.Data {
 	public class DynamicQuery : IPagedDynamicQuery {
 		private string baseQuery;
+		private readonly object[] parameters;
 		private int page;
 		private int pageSize = 10;
 		private readonly IList<WhereClause> whereClauses = new List<WhereClause>();
 		private readonly IList<OrderingClause> orderByClauses = new List<OrderingClause>();
 		private readonly IList<SimilarityOrderingClause> similarityOrderClauses = new List<SimilarityOrderingClause>();
 
-		protected DynamicQuery(string baseQuery) {
+		protected DynamicQuery(string baseQuery, params object[] parameters) {
 			this.baseQuery = baseQuery;
+			this.parameters = parameters;
 		}
 
 		public IPagedDynamicQuery Page(int page) {
@@ -84,8 +86,8 @@ namespace Mios.WebMatrix.Data {
 			}
 		}
 
-		public static IDynamicQuery For(string baseQuery) {
-			return new DynamicQuery(baseQuery);
+		public static IDynamicQuery For(string baseQuery, params object[] parameters) {
+			return new DynamicQuery(baseQuery,parameters);
 		}
 
 		public struct Query {
@@ -94,7 +96,7 @@ namespace Mios.WebMatrix.Data {
 		}
 
 		public Query BuildCountQuery() {
-			var parameters = new List<object>();
+			var parameters = new List<object>(this.parameters);
 			var expression = new StringBuilder();
 			expression.Append(FieldSelectionPattern.Replace(baseQuery, "SELECT COUNT(*) FROM"));
 			AddWhereClauses(expression, parameters);
@@ -105,7 +107,7 @@ namespace Mios.WebMatrix.Data {
 		}
 
 		public Query BuildItemQuery() {
-			var parameters = new List<object>();
+			var parameters = new List<object>(this.parameters);
 			var expression = new StringBuilder();
 			expression.Append(baseQuery);
 			AddWhereClauses(expression, parameters);
@@ -170,7 +172,7 @@ namespace Mios.WebMatrix.Data {
 		}
 
 		static bool IsNonEmptyParameter(object parameter) {
-			return !String.IsNullOrEmpty(parameter as string);
+			return !(parameter is string) || !String.IsNullOrEmpty(parameter as string);
 		}
 
 		static private readonly Regex FieldSelectionPattern 
