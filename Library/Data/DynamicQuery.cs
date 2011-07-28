@@ -172,7 +172,7 @@ namespace Mios.WebMatrix.Data {
 		}
 
 		static bool IsNonEmptyParameter(object parameter) {
-			return !(parameter is string) || !String.IsNullOrEmpty(parameter as string);
+			return parameter!=null && !(parameter is string && String.IsNullOrEmpty(parameter as string));
 		}
 
 		static private readonly Regex FieldSelectionPattern 
