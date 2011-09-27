@@ -1,15 +1,34 @@
 ﻿using System;
+using System.Data.SqlServerCe;
+using System.IO;
 using System.Linq;
 using Mios.WebMatrix.Data;
 using WebMatrix.Data;
 using Xunit;
 
 namespace Tests.Data {
-	public class DynamicQueryTests {
+	public class DynamicQueryTests : IDisposable {
 		private readonly Database db;
+		const string dbFile = "QueryTesting.sdf";
 
 		public DynamicQueryTests() {
-			db = Database.OpenConnectionString("Data Source=QueryTesting.sdf");
+			if(File.Exists(dbFile)) {
+				File.Delete(dbFile);
+			}
+			new SqlCeEngine("Data Source=" + dbFile).CreateDatabase();
+			db = Database.OpenConnectionString("Data Source="+dbFile);
+			db.Execute("CREATE TABLE Users ([id] INT IDENTITY(1000,1) PRIMARY KEY, [firstName] NVARCHAR(128), [lastName] NVARCHAR(128))");
+			db.Execute("INSERT Users ([firstName],[lastName]) VALUES (@0,@1)", "Alice", "Allison");
+			db.Execute("INSERT Users ([firstName],[lastName]) VALUES (@0,@1)", "Bob", "Bobson");
+			db.Execute("INSERT Users ([firstName],[lastName]) VALUES (@0,@1)", "Cecil", "Cyrus");
+			db.Execute("INSERT Users ([firstName],[lastName]) VALUES (@0,@1)", "Donald", "Donaldson");
+		}
+
+		public void Dispose() {
+			db.Close();
+			if(File.Exists(dbFile)) {
+				File.Delete(dbFile);
+			}
 		}
 
 		[Fact]
@@ -177,6 +196,14 @@ namespace Tests.Data {
 			Assert.Equal(0,
 				DynamicQuery.For("SELECT * FROM Users WHERE [firstName]='NOTFOUND'")
 					.OrderBy("id",false)
+					.InPagesOf(3).Page(1)
+					.ExecuteIn(db).TotalCount);
+		}
+
+		[Fact]
+		public void TotalCountOfUncountableQueryIsNegative() {
+			Assert.Equal(-1,
+				DynamicQuery.For("SELECT 42")
 					.InPagesOf(3).Page(1)
 					.ExecuteIn(db).TotalCount);
 		}

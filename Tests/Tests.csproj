@@ -51,11 +51,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="QueryTesting.sdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{BC3E1965-496A-4B28-BCE3-1C60D541127A}</Project>
       <Name>Library</Name>

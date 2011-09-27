@@ -8,7 +8,7 @@ using WebMatrix.Data;
 
 namespace Mios.WebMatrix.Data {
 	public class DynamicQuery : IPagedDynamicQuery {
-		private string baseQuery;
+		private readonly string baseQuery;
 		private readonly object[] parameters;
 		private int page;
 		private int pageSize = 10;
@@ -67,16 +67,21 @@ namespace Mios.WebMatrix.Data {
 
 
 		IPagedEnumerable<dynamic> IPagedDynamicQuery.ExecuteIn(Database db) {
-			var countQuery = BuildCountQuery();
 			int count;
-			try {
-				count = db.QueryValue(countQuery.Statement, countQuery.Parameters);
-			} catch(Exception e) {
-				throw new DynamicQueryException("Exception when executing COUNT() query '" + countQuery.Statement + "'", e);
+			if(FieldSelectionPattern.IsMatch(baseQuery)) {
+				var countQuery = BuildCountQuery();
+				try {
+					count = db.QueryValue(countQuery.Statement, countQuery.Parameters);
+				} catch(Exception e) {
+					throw new DynamicQueryException("Exception when executing COUNT() query '" + countQuery.Statement + "'", e);
+				}
+			} else {
+				count = -1;
 			}
 			var items = ExecuteIn(db).Skip(Math.Max(0, page - 1)*pageSize).Take(pageSize);
 			return new PagedEnumerable<dynamic>(items, count, pageSize, page);
 		}
+
 		public IEnumerable<dynamic> ExecuteIn(Database db) {
 			var query = BuildItemQuery();
 			try {
