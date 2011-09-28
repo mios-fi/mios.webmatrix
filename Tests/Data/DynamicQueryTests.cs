@@ -158,6 +158,14 @@ namespace Tests.Data {
 		}
 
 		[Fact]
+		public void SelectsAtMostNPlusOnePageSizesForPagedQuery() {
+			var dynamicQuery = DynamicQuery.For("SELECT [firstName]+' '+[lastName] AS [name] FROM Users")
+				.InPagesOf(20).Page(2);
+			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			Assert.Equal("SELECT TOP 60 [firstName]+' '+[lastName] AS [name] FROM Users", query.Statement);
+		}
+
+		[Fact]
 		public void CanPageOrderedQuery() {
 			Assert.Equal(1003,
 				DynamicQuery.For("SELECT * FROM Users")

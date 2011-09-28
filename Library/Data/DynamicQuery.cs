@@ -10,8 +10,8 @@ namespace Mios.WebMatrix.Data {
 	public class DynamicQuery : IPagedDynamicQuery {
 		private readonly string baseQuery;
 		private readonly object[] parameters;
-		private int page;
-		private int pageSize = 10;
+		private int page = 1;
+		private int? pageSize;
 		private readonly IList<WhereClause> whereClauses = new List<WhereClause>();
 		private readonly IList<OrderingClause> orderByClauses = new List<OrderingClause>();
 		private readonly IList<SimilarityOrderingClause> similarityOrderClauses = new List<SimilarityOrderingClause>();
@@ -78,8 +78,9 @@ namespace Mios.WebMatrix.Data {
 			} else {
 				count = -1;
 			}
-			var items = ExecuteIn(db).Skip(Math.Max(0, page - 1)*pageSize).Take(pageSize);
-			return new PagedEnumerable<dynamic>(items, count, pageSize, page);
+			var skip = Math.Max(0, page - 1)*pageSize.Value;
+			var items = ExecuteIn(db).Skip(skip).Take(pageSize.Value);
+			return new PagedEnumerable<dynamic>(items, count, pageSize.Value, page);
 		}
 
 		public IEnumerable<dynamic> ExecuteIn(Database db) {
@@ -114,7 +115,11 @@ namespace Mios.WebMatrix.Data {
 		public Query BuildItemQuery() {
 			var parameters = new List<object>(this.parameters);
 			var expression = new StringBuilder();
-			expression.Append(baseQuery);
+			if(pageSize.HasValue) {
+				expression.Append(FieldSelectionPattern.Replace(baseQuery, t => "SELECT TOP " + (page*pageSize + pageSize) + " " + t.Groups[1].Value.Trim() + " FROM"));
+			} else {
+				expression.Append(baseQuery);
+			}
 			AddWhereClauses(expression, parameters);
 			AddOrderByClauses(expression, parameters);
 			return new Query {
@@ -181,7 +186,7 @@ namespace Mios.WebMatrix.Data {
 		}
 
 		static private readonly Regex FieldSelectionPattern 
-			= new Regex(@"^\s*SELECT.*?FROM", RegexOptions.Singleline|RegexOptions.IgnoreCase|RegexOptions.Compiled);
+			= new Regex(@"^\s*SELECT(.*?)FROM", RegexOptions.Singleline|RegexOptions.IgnoreCase|RegexOptions.Compiled);
 		static private readonly Regex ParameterPattern 
 			= new Regex(@"@\d+");
 		static private readonly Regex SafeColumnPattern 
