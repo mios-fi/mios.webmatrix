@@ -56,7 +56,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{BC3E1965-496A-4B28-BCE3-1C60D541127A}</Project>
-      <Name>Library</Name>
+      <Name>Library %28Mios.WebMatrix\Library%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
