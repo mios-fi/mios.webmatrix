@@ -199,6 +199,7 @@ namespace Tests.Data {
 					.ExecuteIn(db).TotalCount);
 		}
 
+		
 		[Fact]
 		public void CanPageQueryWithoutResults() {
 			Assert.Equal(0,
@@ -214,6 +215,17 @@ namespace Tests.Data {
 				DynamicQuery.For("SELECT 42")
 					.InPagesOf(3).Page(1)
 					.ExecuteIn(db).TotalCount);
+		}
+
+		[Fact]
+		public void ExplicitCountQueryOverridesDerived() {
+			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users", 42, "42")
+				.CountBy("SELECT 42");
+			var query = ((DynamicQuery)dynamicQuery).BuildCountQuery();
+			Assert.Equal("SELECT 42", query.Statement);
+			var parameters = query.Parameters.ToArray();
+			Assert.Equal(42,parameters[0]);
+			Assert.Equal("42",parameters[1]);
 		}
 	}
 }

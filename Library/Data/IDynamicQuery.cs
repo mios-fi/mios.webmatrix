@@ -8,8 +8,10 @@ namespace Mios.WebMatrix.Data {
 	}
 	public interface IDynamicQuery {
 		IEnumerable<dynamic> ExecuteIn(Database db);
+		IDynamicQuery CountBy(string countQuery);
 		IDynamicQuery Where(string filter, params object[] parameters);
 		IDynamicQuery OrderBy(string column, bool descending);
+		IDynamicQuery OrderByDescending(string column);
 		IDynamicQuery OrderBySimilarity(string column, string parameter, bool ignoreCase = true, string method = "dbo.JaroWinkler");
 		IPagedDynamicQuery InPagesOf(int pageSize);
 	}

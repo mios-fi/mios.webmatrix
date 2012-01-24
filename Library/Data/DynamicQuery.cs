@@ -10,6 +10,7 @@ namespace Mios.WebMatrix.Data {
 	public class DynamicQuery : IPagedDynamicQuery {
 		private readonly string baseQuery;
 		private readonly object[] parameters;
+		private string countQuery;
 		private int page = 1;
 		private int? pageSize;
 		private readonly IList<WhereClause> whereClauses = new List<WhereClause>();
@@ -19,6 +20,11 @@ namespace Mios.WebMatrix.Data {
 		protected DynamicQuery(string baseQuery, params object[] parameters) {
 			this.baseQuery = baseQuery;
 			this.parameters = parameters;
+		}
+
+		public IDynamicQuery CountBy(string countQuery) {
+			this.countQuery = countQuery;
+			return this;
 		}
 
 		public IPagedDynamicQuery Page(int page) {
@@ -39,6 +45,9 @@ namespace Mios.WebMatrix.Data {
 			return this;
 		}
 
+		public IDynamicQuery OrderByDescending(string column) {
+			return OrderBy(column, true);
+		}
 		public IDynamicQuery OrderBy(string column, bool descending) {
 			if(String.IsNullOrEmpty(column)) {
 				return this;
@@ -68,7 +77,8 @@ namespace Mios.WebMatrix.Data {
 
 		IPagedEnumerable<dynamic> IPagedDynamicQuery.ExecuteIn(Database db) {
 			int count;
-			if(FieldSelectionPattern.IsMatch(baseQuery)) {
+			if(FieldSelectionPattern.IsMatch(baseQuery))
+			{
 				var countQuery = BuildCountQuery();
 				try {
 					count = db.QueryValue(countQuery.Statement, countQuery.Parameters);
@@ -93,7 +103,7 @@ namespace Mios.WebMatrix.Data {
 		}
 
 		public static IDynamicQuery For(string baseQuery, params object[] parameters) {
-			return new DynamicQuery(baseQuery,parameters);
+			return new DynamicQuery(baseQuery, parameters);
 		}
 
 		public struct Query {
@@ -102,6 +112,15 @@ namespace Mios.WebMatrix.Data {
 		}
 
 		public Query BuildCountQuery() {
+			if(countQuery==null) {
+				return BuildDerivedCountQuery();
+			}
+			return new Query {
+				Statement = countQuery,
+				Parameters = parameters
+			};
+		}
+		private Query BuildDerivedCountQuery() {
 			var parameters = new List<object>(this.parameters);
 			var expression = new StringBuilder();
 			expression.Append(FieldSelectionPattern.Replace(baseQuery, "SELECT COUNT(*) FROM"));
