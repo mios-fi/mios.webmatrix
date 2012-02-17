@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -77,8 +79,7 @@ namespace Mios.WebMatrix.Data {
 
 		IPagedEnumerable<dynamic> IPagedDynamicQuery.ExecuteIn(Database db) {
 			int count;
-			if(FieldSelectionPattern.IsMatch(baseQuery))
-			{
+			if(FieldSelectionPattern.IsMatch(baseQuery)) {
 				var countQuery = BuildCountQuery();
 				try {
 					count = db.QueryValue(countQuery.Statement, countQuery.Parameters);
@@ -91,6 +92,11 @@ namespace Mios.WebMatrix.Data {
 			var skip = Math.Max(0, page - 1)*pageSize.Value;
 			var items = ExecuteIn(db).Skip(skip).Take(pageSize.Value);
 			return new PagedEnumerable<dynamic>(items, count, pageSize.Value, page);
+		}
+
+		IPagedEnumerable<dynamic> IPagedDynamicQuery.ExecuteCursorIn(Database db) {
+			var query = BuildItemQuery();
+			return new CursorEnumerable(db.Connection, query.Statement, pageSize.Value, page, query.Parameters);
 		}
 
 		public IEnumerable<dynamic> ExecuteIn(Database db) {

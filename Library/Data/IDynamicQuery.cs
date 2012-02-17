@@ -5,6 +5,7 @@ namespace Mios.WebMatrix.Data {
 	public interface IPagedDynamicQuery : IDynamicQuery {
 		IPagedDynamicQuery Page(int page);
 		new IPagedEnumerable<dynamic> ExecuteIn(Database db);
+		IPagedEnumerable<dynamic> ExecuteCursorIn(Database db);
 	}
 	public interface IDynamicQuery {
 		IEnumerable<dynamic> ExecuteIn(Database db);

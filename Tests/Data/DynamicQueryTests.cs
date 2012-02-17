@@ -38,6 +38,7 @@ namespace Tests.Data {
 			Assert.Equal("SELECT * FROM Users", query.Statement);
 			Assert.Equal(0, query.Parameters.Count());
 		}
+
 		[Fact]
 		public void SingleFilter() {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
