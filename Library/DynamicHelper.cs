@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace Mios.WebMatrix {
-	internal static class DynamicHelper {
+	public static class DynamicHelper {
 		public static IEnumerable<string> ListMemberNames(object obj) {
 			var provider = obj as IDynamicMetaObjectProvider;
 			if(provider==null) return Enumerable.Empty<string>();
