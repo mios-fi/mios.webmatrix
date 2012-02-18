@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Dynamic;
+using System.Linq;
 using Mios.WebMatrix.Data;
+using WebMatrix.Data;
 
 namespace Tests.Data {
 	internal class CursorEnumerable : IPagedEnumerable<object> {
@@ -90,7 +93,7 @@ namespace Tests.Data {
 			count = (int) cmd.ExecuteScalar();
 		}
 
-		public class Result : DynamicObject {
+		public class Result : DynamicObject, ICustomTypeDescriptor {
 			private readonly string[] keys;
 			private readonly object[] values;
 			public Result(string[] keys, object[] values) {
@@ -121,7 +124,7 @@ namespace Tests.Data {
 				return TryGetMember(member, out result);
 			}
 
-			private bool TryGetMember(string member, out object result) {
+			public bool TryGetMember(string member, out object result) {
 				var index = Array.IndexOf(keys, member);
 				if(index<0) {
 					result = null;
@@ -130,13 +133,92 @@ namespace Tests.Data {
 				result = values[index];
 				return true;
 			}
-			private bool TryGetIndex(int index, out object result) {
+			public bool TryGetIndex(int index, out object result) {
 				if(index<0 || index>values.Length-1) {
 					result = null;
 					return false;
 				}
 				result = values[index];
 				return true;
+			}
+
+			public AttributeCollection GetAttributes() {
+				return new AttributeCollection();
+			}
+			public string GetClassName() {
+				return null;
+			}
+			public string GetComponentName() {
+				return null;
+			}
+			public TypeConverter GetConverter() {
+				return null;
+			}
+			public EventDescriptor GetDefaultEvent() {
+				return null;
+			}
+			public PropertyDescriptor GetDefaultProperty() {
+				return null;
+			}
+			public object GetEditor(Type editorBaseType) {
+				return null;
+			}
+			public EventDescriptorCollection GetEvents() {
+				return EventDescriptorCollection.Empty;
+			}
+			public EventDescriptorCollection GetEvents(Attribute[] attributes) {
+				return EventDescriptorCollection.Empty;
+			}
+			public PropertyDescriptorCollection GetProperties() {
+				var descriptors = keys.Select((t,i)=>new DynamicPropertyDescriptor(t,values[i].GetType()));
+				return new PropertyDescriptorCollection(descriptors.OfType<PropertyDescriptor>().ToArray(), true);
+			}
+			public PropertyDescriptorCollection GetProperties(Attribute[] attributes) {
+				return GetProperties();
+			}
+
+			public object GetPropertyOwner(PropertyDescriptor pd) {
+				return this;
+			}
+		}
+		class DynamicPropertyDescriptor : PropertyDescriptor {
+			private static readonly Attribute[] Empty = new Attribute[0];
+			private readonly string name;
+			private readonly Type type;
+
+			public DynamicPropertyDescriptor(string name, Type type) : base(name, Empty) {
+				this.name = name;
+				this.type = type;
+			}
+
+			public override bool CanResetValue(object component) {
+				return false;
+			}
+			public override object GetValue(object component) {
+				var result = component as Result;
+				if(result==null) {
+					throw new ArgumentException("component");
+				}
+				object value;
+				return result.TryGetMember(name, out value) ? value : null;
+			}
+			public override void ResetValue(object component) {
+				throw new InvalidOperationException();
+			}
+			public override void SetValue(object component, object value) {
+				throw new InvalidOperationException();
+			}
+			public override bool ShouldSerializeValue(object component) {
+				return false;
+			}
+			public override Type ComponentType {
+				get { return typeof(Result); }
+			}
+			public override bool IsReadOnly {
+				get { return true; }
+			}
+			public override Type PropertyType {
+				get { return type; }
 			}
 		}
 	}
