@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -100,7 +98,9 @@ namespace Mios.WebMatrix.Data {
 		}
 
 		public IEnumerable<dynamic> ExecuteIn(Database db) {
-			var query = BuildItemQuery();
+			var query = pageSize.HasValue
+				? BuildPagedItemQuery()
+				: BuildItemQuery();
 			try {
 				return db.Query(query.Statement, query.Parameters);
 			} catch(Exception e) {
@@ -137,7 +137,7 @@ namespace Mios.WebMatrix.Data {
 			};
 		}
 
-		public Query BuildItemQuery() {
+		public Query BuildPagedItemQuery() {
 			var parameters = new List<object>(this.parameters);
 			var expression = new StringBuilder();
 			if(pageSize.HasValue) {
@@ -145,6 +145,17 @@ namespace Mios.WebMatrix.Data {
 			} else {
 				expression.Append(baseQuery);
 			}
+			AddWhereClauses(expression, parameters);
+			AddOrderByClauses(expression, parameters);
+			return new Query {
+				Statement = expression.ToString(),
+				Parameters = parameters.ToArray()
+			};
+		}
+		public Query BuildItemQuery() {
+			var parameters = new List<object>(this.parameters);
+			var expression = new StringBuilder();
+			expression.Append(baseQuery);
 			AddWhereClauses(expression, parameters);
 			AddOrderByClauses(expression, parameters);
 			return new Query {

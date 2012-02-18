@@ -34,7 +34,7 @@ namespace Tests.Data {
 		[Fact]
 		public void Identity() {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users");
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users", query.Statement);
 			Assert.Equal(0, query.Parameters.Count());
 		}
@@ -43,7 +43,7 @@ namespace Tests.Data {
 		public void SingleFilter() {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
 				.Where("[firstName]=@0", "Alice");
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users WHERE [firstName]=@0", query.Statement);
 			Assert.Equal("Alice", query.Parameters.ToArray()[0]);
 		}
@@ -51,7 +51,7 @@ namespace Tests.Data {
 		public void SingleFilterWithoutValue() {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
 				.Where("[firstName]=@0", null);
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users", query.Statement);
 			Assert.Equal(0, query.Parameters.Count());
 		}
@@ -60,7 +60,7 @@ namespace Tests.Data {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
 				.Where("[lastName]=@0", "Johnsson")
 				.Where("[firstName]=@0", "Alice");
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users WHERE [lastName]=@0 AND [firstName]=@1", query.Statement);
 			Assert.Equal("Johnsson", query.Parameters.ToArray()[0]);
 			Assert.Equal("Alice", query.Parameters.ToArray()[1]);
@@ -69,14 +69,14 @@ namespace Tests.Data {
 		public void OrderBy() {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
 				.OrderBy("[lastName]",false);
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users ORDER BY [lastName] ASC", query.Statement);
 		}
 		[Fact]
 		public void OrderByDescending() {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")		
 				.OrderBy("[lastName]", true);
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users ORDER BY [lastName] DESC", query.Statement);
 		}
 		[Fact]
@@ -84,7 +84,7 @@ namespace Tests.Data {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
 				.OrderBy("[lastName]", false)
 				.OrderBy("[firstName]", false);
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users ORDER BY [lastName] ASC, [firstName] ASC", query.Statement);
 		}
 		[Fact]
@@ -92,7 +92,7 @@ namespace Tests.Data {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
 				.Where("[firstName]=@0","Bob")
 				.OrderBy("[lastName]",false);
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users WHERE [firstName]=@0 ORDER BY [lastName] ASC", query.Statement);
 			Assert.Equal("Bob", query.Parameters.ToArray()[0]);
 		}
@@ -100,7 +100,7 @@ namespace Tests.Data {
 		public void OrderByEmptyColumn() {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
 				.OrderBy("",false);
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users", query.Statement);
 		}
 		[Fact]
@@ -112,7 +112,7 @@ namespace Tests.Data {
 		public void OrderBySimilarity() {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
 				.OrderBySimilarity("[firstName]", "Alice");
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users ORDER BY (dbo.JaroWinkler(LOWER([firstName]),@0)) DESC", query.Statement);
 			Assert.Equal("alice", query.Parameters.ToArray()[0]);
 		}
@@ -121,17 +121,17 @@ namespace Tests.Data {
 			IDynamicQuery query;
 			query = DynamicQuery.For("SELECT * FROM Users")
 				.OrderBySimilarity("firstName", String.Empty);
-			Assert.Equal("SELECT * FROM Users", ((DynamicQuery)query).BuildItemQuery().Statement);
+			Assert.Equal("SELECT * FROM Users", ((DynamicQuery)query).BuildPagedItemQuery().Statement);
 			query = DynamicQuery.For("SELECT * FROM Users")
 				.OrderBySimilarity("firstName", null);
-			Assert.Equal("SELECT * FROM Users", ((DynamicQuery)query).BuildItemQuery().Statement);
+			Assert.Equal("SELECT * FROM Users", ((DynamicQuery)query).BuildPagedItemQuery().Statement);
 		}
 		[Fact]
 		public void OrderByMultipleSimilarity() {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
 				.OrderBySimilarity("[firstName]", "Alice")
 				.OrderBySimilarity("[lastName]","Stone");
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users ORDER BY (dbo.JaroWinkler(LOWER([firstName]),@0)+dbo.JaroWinkler(LOWER([lastName]),@1)) DESC", query.Statement);
 			Assert.Equal("alice", query.Parameters.ToArray()[0]);
 			Assert.Equal("stone", query.Parameters.ToArray()[1]);
@@ -141,7 +141,7 @@ namespace Tests.Data {
 			var dynamicQuery = DynamicQuery.For("SELECT * FROM Users")
 				.OrderBySimilarity("[firstName]", "Alice")
 				.OrderBy("lastName",false);
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT * FROM Users ORDER BY (dbo.JaroWinkler(LOWER([firstName]),@0)) DESC, [lastName] ASC", query.Statement);
 			Assert.Equal("alice", query.Parameters.ToArray()[0]);
 		}
@@ -151,7 +151,7 @@ namespace Tests.Data {
 		public void ParameterizedQueryWithWheres() {
 			var dynamicQuery = DynamicQuery.For("SELECT @0 AS [x] FROM Users",1234)
 				.Where("[id]=@0",1003);
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT @0 AS [x] FROM Users WHERE [id]=@1", query.Statement);
 			Assert.Equal(2, query.Parameters.Count());
 			Assert.Equal(1234, query.Parameters[0]);
@@ -162,7 +162,7 @@ namespace Tests.Data {
 		public void SelectsAtMostNPlusOnePageSizesForPagedQuery() {
 			var dynamicQuery = DynamicQuery.For("SELECT [firstName]+' '+[lastName] AS [name] FROM Users")
 				.InPagesOf(20).Page(2);
-			var query = ((DynamicQuery)dynamicQuery).BuildItemQuery();
+			var query = ((DynamicQuery)dynamicQuery).BuildPagedItemQuery();
 			Assert.Equal("SELECT TOP 60 [firstName]+' '+[lastName] AS [name] FROM Users", query.Statement);
 		}
 
