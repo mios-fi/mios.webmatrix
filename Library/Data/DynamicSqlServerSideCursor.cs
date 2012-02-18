@@ -29,7 +29,8 @@ namespace Mios.WebMatrix.Data {
 			var cmd = con.CreateCommand();
 			while(take-->0) {
 				if(skip>0) {
-					cmd.CommandText = "FETCH RELATIVE "+(skip+1)+" FROM c SELECT @@FETCH_STATUS";
+					cmd.CommandText = "FETCH ABSOLUTE "+(skip+1)+" FROM c SELECT @@FETCH_STATUS";
+					skip = 0;
 				} else {
 					cmd.CommandText = "FETCH NEXT FROM c SELECT @@FETCH_STATUS";
 				}
