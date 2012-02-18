@@ -43,7 +43,7 @@
     <Reference Include="WebMatrix.Data, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\CursorEnumerable.cs" />
+    <Compile Include="Data\DynamicSqlServerSideCursor.cs" />
     <Compile Include="Data\DynamicQuery.cs" />
     <Compile Include="Data\IDynamicQuery.cs" />
     <Compile Include="Data\PagedEnumerable.cs" />
