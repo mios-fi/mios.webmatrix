@@ -80,8 +80,8 @@ namespace Tests.Data {
 			using(var con = CreateConnection()) {
 				con.Open();
 				var cursor = new DynamicSqlServerSideCursor(con, "SELECT * FROM Users", 2, 1);
-				Assert.Equal(3, cursor.TotalCount);
-				Assert.Equal(2, cursor.Pages);
+				Assert.Equal(7, cursor.TotalCount);
+				Assert.Equal(4, cursor.Pages);
 			}
 		}
 		[Fact]
@@ -90,7 +90,7 @@ namespace Tests.Data {
 				con.Open();
 				var cursor = new DynamicSqlServerSideCursor(con, "SELECT * FROM Users", 2, 2);
 				var r = cursor.ToArray<dynamic>();
-				Assert.Equal(1, r.Length);
+				Assert.Equal(2, r.Length);
 				Assert.Equal(3, r[0].Id);
 			}
 		}

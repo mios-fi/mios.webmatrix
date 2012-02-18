@@ -25,8 +25,9 @@ namespace Mios.WebMatrix.Data {
 			EnsureCursorCreated();
 			string[] fields = null;
 			var skip = (Page-1)*PageSize;
+			var take = PageSize;
 			var cmd = con.CreateCommand();
-			while(true) {
+			while(take-->0) {
 				if(skip>0) {
 					cmd.CommandText = "FETCH RELATIVE "+(skip+1)+" FROM c SELECT @@FETCH_STATUS";
 				} else {
