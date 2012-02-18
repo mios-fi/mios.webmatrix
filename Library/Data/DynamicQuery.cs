@@ -94,7 +94,7 @@ namespace Mios.WebMatrix.Data {
 
 		IPagedEnumerable<dynamic> IPagedDynamicQuery.ExecuteCursorIn(Database db) {
 			var query = BuildItemQuery();
-			return new DynamicSqlServerSideCursor(db.Connection, query.Statement, pageSize.Value, page, query.Parameters);
+			return new ServerSideSqlCursor(db.Connection, query.Statement, pageSize.Value, page, query.Parameters);
 		}
 
 		public IEnumerable<dynamic> ExecuteIn(Database db) {

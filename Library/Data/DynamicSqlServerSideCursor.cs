@@ -6,14 +6,14 @@ using System.Dynamic;
 using System.Linq;
 
 namespace Mios.WebMatrix.Data {
-	public class DynamicSqlServerSideCursor : IPagedEnumerable<object> {
+	public class ServerSideSqlCursor : IPagedEnumerable<ServerSideSqlCursor.ResultRow> {
 		private readonly IDbConnection con;
 		private readonly string query;
 		private readonly object[] parameters;
 
 		private int? count;
 
-		public DynamicSqlServerSideCursor(IDbConnection con, string query, int pageSize, int page, params object[] parameters) {
+		public ServerSideSqlCursor(IDbConnection con, string query, int pageSize, int page, params object[] parameters) {
 			PageSize = pageSize;
 			Page = Math.Max(1,page);
 			this.con = con;
@@ -21,7 +21,7 @@ namespace Mios.WebMatrix.Data {
 			this.parameters = parameters;
 		}
 
-		public IEnumerator<dynamic> GetEnumerator() {
+		public IEnumerator<ResultRow> GetEnumerator() {
 			EnsureCursorCreated();
 			string[] fields = null;
 			var skip = (Page-1)*PageSize;
@@ -44,7 +44,7 @@ namespace Mios.WebMatrix.Data {
 					}
 					var values = new object[fields.Length];
 					reader.GetValues(values);
-					yield return new DynamicCursorRow(fields, values);
+					yield return new ResultRow(fields, values);
 				}
 			}
 		}
@@ -89,13 +89,29 @@ namespace Mios.WebMatrix.Data {
 			count = (int) cmd.ExecuteScalar();
 		}
 
-		private class DynamicCursorRow : DynamicObject, ICustomTypeDescriptor {
+		public class ResultRow : DynamicObject, ICustomTypeDescriptor {
 			private readonly string[] keys;
 			private readonly object[] values;
-			public DynamicCursorRow(string[] keys, object[] values) {
+			public ResultRow(string[] keys, object[] values) {
 				this.keys = keys;
 				this.values = values;
 			}
+
+			public object this[string index] {
+				get {
+					object value;
+					TryGetMember(index, out value);
+					return value;
+				}
+			}
+			public object this[int index] {
+				get {
+					object value;
+					TryGetIndex(index, out value);
+					return value;
+				}
+			}
+
 			public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result) {
 				if(indexes.Length!=1) {
 					result = null;
@@ -192,12 +208,11 @@ namespace Mios.WebMatrix.Data {
 					return false;
 				}
 				public override object GetValue(object component) {
-					var result = component as DynamicCursorRow;
+					var result = component as ResultRow;
 					if(result==null) {
 						throw new ArgumentException("component");
 					}
-					object value;
-					return result.TryGetMember(name, out value) ? value : null;
+					return result[name];
 				}
 				public override void ResetValue(object component) {
 					throw new InvalidOperationException();
@@ -209,7 +224,7 @@ namespace Mios.WebMatrix.Data {
 					return false;
 				}
 				public override Type ComponentType {
-					get { return typeof(DynamicCursorRow); }
+					get { return typeof(ResultRow); }
 				}
 				public override bool IsReadOnly {
 					get { return true; }
