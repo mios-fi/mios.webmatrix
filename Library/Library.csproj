@@ -47,6 +47,7 @@
     <Compile Include="Data\DynamicQuery.cs" />
     <Compile Include="Data\IDynamicQuery.cs" />
     <Compile Include="Data\PagedEnumerable.cs" />
+    <Compile Include="Data\StaticPagedEnumerable.cs" />
     <Compile Include="DynamicHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
