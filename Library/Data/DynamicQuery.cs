@@ -129,7 +129,7 @@ namespace Mios.WebMatrix.Data {
 		private Query BuildDerivedCountQuery() {
 			var parameters = new List<object>(this.parameters);
 			var expression = new StringBuilder();
-			expression.Append(FieldSelectionPattern.Replace(baseQuery, "SELECT COUNT(*) FROM"));
+			expression.Append(FieldSelectionPattern.Replace(baseQuery, "SELECT COUNT(*) FROM "));
 			AddWhereClauses(expression, parameters);
 			return new Query {
 				Statement = expression.ToString(),
@@ -141,7 +141,7 @@ namespace Mios.WebMatrix.Data {
 			var parameters = new List<object>(this.parameters);
 			var expression = new StringBuilder();
 			if(pageSize.HasValue) {
-				expression.Append(FieldSelectionPattern.Replace(baseQuery, t => "SELECT TOP " + (page*pageSize + pageSize) + " " + t.Groups[1].Value.Trim() + " FROM"));
+				expression.Append(FieldSelectionPattern.Replace(baseQuery, t => "SELECT TOP " + (page*pageSize + pageSize) + " " + t.Groups[1].Value.Trim() + " FROM "));
 			} else {
 				expression.Append(baseQuery);
 			}
@@ -222,7 +222,7 @@ namespace Mios.WebMatrix.Data {
 		}
 
 		static private readonly Regex FieldSelectionPattern 
-			= new Regex(@"^\s*SELECT(.*?)FROM", RegexOptions.Singleline|RegexOptions.IgnoreCase|RegexOptions.Compiled);
+			= new Regex(@"^\s*SELECT(.*?)\sFROM\s", RegexOptions.Singleline|RegexOptions.IgnoreCase|RegexOptions.Compiled);
 		static private readonly Regex ParameterPattern 
 			= new Regex(@"@\d+");
 		static private readonly Regex SafeColumnPattern 

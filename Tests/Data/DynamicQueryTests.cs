@@ -22,7 +22,8 @@ namespace Tests.Data {
 			db.Execute("INSERT Users ([firstName],[lastName]) VALUES (@0,@1)", "Bob", "Bobson");
 			db.Execute("INSERT Users ([firstName],[lastName]) VALUES (@0,@1)", "Cecil", "Cyrus");
 			db.Execute("INSERT Users ([firstName],[lastName]) VALUES (@0,@1)", "Donald", "Donaldson");
-		}
+      db.Execute("CREATE TABLE UsersWithFromField ([id] INT IDENTITY(1000,1) PRIMARY KEY, [from] NVARCHAR(128))");
+    }
 
 		public void Dispose() {
 			db.Close();
@@ -210,13 +211,21 @@ namespace Tests.Data {
 					.ExecuteIn(db).TotalCount);
 		}
 
-		[Fact]
-		public void TotalCountOfUncountableQueryIsNegative() {
-			Assert.Equal(-1,
-				DynamicQuery.For("SELECT 42")
-					.InPagesOf(3).Page(1)
-					.ExecuteIn(db).TotalCount);
-		}
+    [Fact]
+    public void TotalCountOfUncountableQueryIsNegative() {
+      Assert.Equal(-1,
+        DynamicQuery.For("SELECT 42")
+          .InPagesOf(3).Page(1)
+          .ExecuteIn(db).TotalCount);
+    }
+
+    [Fact]
+    public void CanCountQueryWithFieldNamedFROM() {
+      Assert.Equal(0,
+        DynamicQuery.For("SELECT [from] FROM UsersWithFromField")
+          .InPagesOf(3).Page(1)
+          .ExecuteIn(db).TotalCount);
+    }
 
 		[Fact]
 		public void ExplicitCountQueryOverridesDerived() {
