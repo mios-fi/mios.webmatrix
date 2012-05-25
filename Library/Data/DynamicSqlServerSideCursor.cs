@@ -93,7 +93,9 @@ namespace Mios.WebMatrix.Data {
 			private readonly string[] keys;
 			private readonly object[] values;
 			public ResultRow(string[] keys, object[] values) {
-				this.keys = keys;
+				this.keys = keys
+          .Select(t=>t.ToLowerInvariant())
+          .ToArray();
 				this.values = values;
 			}
 
@@ -137,7 +139,7 @@ namespace Mios.WebMatrix.Data {
 			}
 
 			public bool TryGetMember(string member, out object result) {
-				var index = Array.IndexOf(keys, member);
+				var index = Array.IndexOf(keys, member.ToLowerInvariant());
 				if(index<0) {
 					result = null;
 					return false;

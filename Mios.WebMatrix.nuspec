@@ -2,13 +2,13 @@
 <package>
   <metadata>
     <id>mios.webmatrix.helpers</id>
-    <version>1.0.0.0</version>
+    <version>1.0.1.4</version>
     <authors>Mios</authors>
     <description>Helpers for working with WebMatrix.</description>
     <language>en</language>
   </metadata>
   <files>
-    <file src="Library\bin\Release\*.dll" target="lib" />
-    <file src="Library\bin\Release\*.xml" target="lib" />
+    <file src="Library\bin\Debug\*.dll" target="lib" />
+    <file src="Library\bin\Debug\*.xml" target="lib" />
   </files>
 </package>
