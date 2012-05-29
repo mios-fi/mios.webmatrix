@@ -19,7 +19,7 @@ namespace Tests.Data {
 			return con;
 		}
 
-		[Fact]
+		[Fact(Skip="Dependencies")]
 		public void IsAccessibleByDynamicHelper() {
 			using(var con = CreateConnection()) {
 				con.Open();
@@ -30,8 +30,8 @@ namespace Tests.Data {
 			}
 		}
 
-		[Fact]
-		public void CanGetResultByProperty() {
+    [Fact(Skip="Dependencies")]
+    public void CanGetResultByProperty() {
 			using(var con = CreateConnection()) {
 				con.Open();
 				var cursor = new ServerSideSqlCursor(con, "SELECT * FROM Users ORDER BY [id]", 10, 1);
@@ -44,8 +44,8 @@ namespace Tests.Data {
 				Assert.Equal("cecil", r[2].Name);
 			}
 		}
-		[Fact]
-		public void CanGetResultByIndexes() {
+    [Fact(Skip="Dependencies")]
+    public void CanGetResultByIndexes() {
 			using(var con = CreateConnection()) {
 				con.Open();
 				var cursor = new ServerSideSqlCursor(con, "SELECT * FROM Users ORDER BY [id]", 10, 1);
@@ -57,8 +57,8 @@ namespace Tests.Data {
 			}
 		}
 
-		[Fact]
-		public void CanListFields() {
+    [Fact(Skip="Dependencies")]
+    public void CanListFields() {
 			using(var con = CreateConnection()) {
 				con.Open();
 				var cursor = new ServerSideSqlCursor(con, "SELECT * FROM Users ORDER BY [id]", 10, 1);
@@ -66,8 +66,8 @@ namespace Tests.Data {
 				Assert.Equal(new[] { "id", "name" }, r[0].Columns);
 			}
 		}
-		[Fact]
-		public void CanUseParameters() {
+    [Fact(Skip="Dependencies")]
+    public void CanUseParameters() {
 			using(var con = CreateConnection()) {
 				con.Open();
 				var cursor = new ServerSideSqlCursor(con, "SELECT * FROM Users WHERE [id]>@0 ORDER BY [id]", 10, 1, 1);
@@ -76,8 +76,8 @@ namespace Tests.Data {
 				Assert.Equal("bob", r[0]["name"]);
 			}
 		}
-		[Fact]
-		public void CanPresentTotalCount() {
+    [Fact(Skip="Dependencies")]
+    public void CanPresentTotalCount() {
 			using(var con = CreateConnection()) {
 				con.Open();
 				var cursor = new ServerSideSqlCursor(con, "SELECT * FROM Users ORDER BY [id]", 2, 1);
@@ -85,8 +85,8 @@ namespace Tests.Data {
 				Assert.Equal(4, cursor.Pages);
 			}
 		}
-		[Fact]
-		public void CanPageResults() {
+    [Fact(Skip="Dependencies")]
+    public void CanPageResults() {
 			using(var con = CreateConnection()) {
 				con.Open();
 				var cursor = new ServerSideSqlCursor(con, "SELECT * FROM Users ORDER BY [id]", 2, 1);
