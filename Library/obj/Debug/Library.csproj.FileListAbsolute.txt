@@ -1,5 +1,0 @@
-E:\mios\mios.webmatrix\Library\bin\Debug\Mios.WebMatrix.dll
-E:\mios\mios.webmatrix\Library\bin\Debug\Mios.WebMatrix.pdb
-E:\mios\mios.webmatrix\Library\obj\Debug\ResolveAssemblyReference.cache
-E:\mios\mios.webmatrix\Library\obj\Debug\Mios.WebMatrix.dll
-E:\mios\mios.webmatrix\Library\obj\Debug\Mios.WebMatrix.pdb
